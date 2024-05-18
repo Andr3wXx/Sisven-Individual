@@ -16,7 +16,7 @@ class PaymodeController extends Controller
     public function index()
     {
         $paymodes = Paymode::all();
-        $paymodes = DB::table('paymodes')->get();
+        $paymodes = DB::table('paymode')->get();
         return json_encode(['paymodes' => $paymodes]);
     }
 

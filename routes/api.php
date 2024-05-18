@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\api\CategoriaController;
 use App\Http\Controllers\api\CustomerController;
-use App\Http\Controllers\api\ProductController;
+use App\Http\Controllers\api\ProductoController;
 use App\Http\Controllers\api\PaymodeController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,8 +37,8 @@ Route::put('/paymodes/{paymode}', [PaymodeController::class, 'update'])->name('p
 
 //Rutas Productos
 
-Route::get('/productos', [PaymodeController::class, 'index'])->name('paymodes');
-Route::post('/productos', [PaymodeController::class, 'store'])->name('paymodes.store');
-Route::delete('/productos/{producto}', [PaymodeController::class, 'destroy'])->name('paymodes.destroy');
-Route::get('/productos/{producto}', [PaymodeController::class, 'show'])->name('paymodes.show');
-Route::put('/productos/{producto}', [PaymodeController::class, 'update'])->name('paymodes.update');
+Route::get('/productos', [ProductoController::class, 'index'])->name('products');
+Route::post('/productos', [ProductoController::class, 'store'])->name('products.store');
+Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('products.destroy');
+Route::get('/productos/{producto}', [ProductoController::class, 'show'])->name('products.show');
+Route::put('/productos/{producto}', [ProductoController::class, 'update'])->name('products.update');
