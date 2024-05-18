@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Paymode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PaymodeController extends Controller
 {
@@ -14,7 +15,9 @@ class PaymodeController extends Controller
      */
     public function index()
     {
-        //
+        $paymodes = Paymode::all();
+        $paymodes = DB::table('paymodes')->get();
+        return json_encode(['paymodes' => $paymodes]);
     }
 
     /**
@@ -22,7 +25,29 @@ class PaymodeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = Validator::make($request->all(), [
+            'name' => ['required', 'max:50', 'unique:paymodes,name,'],
+            'observation' => ['required', 'max:2000']
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'msg' => 'Se produjo un error en la validación de la información.',
+                'statusCode' => 400
+            ]);
+        }
+        $paymode = new Paymode();
+
+        $paymode->Name = $request->Name;
+        $paymode->Observation = $request->Observation;
+
+        $paymode->save();
+
+        $paymodes = DB::table('paymode')
+            ->orderBy('id')
+            ->get();
+
+            return json_encode( ['paymodes' => $paymodes]);
     }
 
     /**
@@ -30,7 +55,11 @@ class PaymodeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $paymodes = Paymode::find($id);
+        if(is_null($paymodes))
+        {
+            return abort(400);
+        };
     }
 
     /**
@@ -38,7 +67,20 @@ class PaymodeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        {
+            $paymode = Paymode::find($id);
+    
+            $paymode->Name = $request->Name;
+            $paymode->Observation = $request->Observation;
+    
+            $paymode->save();
+    
+            $paymodes = DB::table('paymode')
+                ->orderBy('id')
+                ->get();
+    
+                return json_encode( ['paymodes' => $paymodes]);
+        }
     }
 
     /**
@@ -46,6 +88,15 @@ class PaymodeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        {
+            $paymode = Paymode::find($id);
+            $paymode->delete();
+    
+            $paymodes = DB::table('paymode')
+                ->orderBy('id')
+                ->get();
+    
+                return json_encode( ['paymodes' => $paymodes]);
+        }
     }
 }

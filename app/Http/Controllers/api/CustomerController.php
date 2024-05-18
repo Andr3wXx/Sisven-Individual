@@ -44,9 +44,11 @@ class CustomerController extends Controller
     public function show(string $id)
     {
         $customer = Customer::find($id);
-        if (is_null($customer)){
+        if(is_null($customer)){
             return abort(404);
         }
+
+        return json_encode(['customers'=> $customer]);
     }
 
     /**
