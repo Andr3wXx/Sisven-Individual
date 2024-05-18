@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoriaController extends Controller
 {
@@ -15,19 +17,7 @@ class CategoriaController extends Controller
     {
         $categorias = Categoria::all();
         $categorias = DB::table('categories')->get();
-        return view('categoria.index', ['categorias' => $categorias]);
-
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $categorias = DB::table('categories')
-        ->orderBy('name')
-        ->get();
-        return view ('categoria.new', ['categorias' => $categorias]);
+        return json_encode(['categorias' => $categorias]);
     }
 
     /**
@@ -35,34 +25,28 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        $categoria = new Categoria();
+        $validate = Validator::make($request->all(), [
+            'name' => ['required', 'max:30', 'unique:categorias'],
+            'description' => ['required', 'max:255']
+        ]);
 
-        $categoria -> name = $request -> name;
-        $categoria -> description = $request-> description;
-        $categoria->save();
-
-        return redirect()->route('categorias.index');
+        if ($validate->fails()) {
+            return response()->json([
+                'msg' => 'Se produjo un error en la validación de la información.',
+                'statusCode' => 400
+            ]);
+        }
     }
-
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
         $categoria = Categoria::find($id);
-        $categorias = DB::table('categories')
-        ->orderBy('name')
-        ->get();
-        return view ('categoria.edit', ['categoria' => $categoria]);
-    }
+        if (is_null($categoria)){
+            return abort(404);
+        }
+    }   
 
     /**
      * Update the specified resource in storage.
@@ -77,9 +61,7 @@ class CategoriaController extends Controller
         $categorias = DB::table('categories')
         ->orderBy('name')
         ->get();
-        return view ('categoria.index', ['categorias' => $categorias]);
-
-
+        return json_encode ( ['categorias' => $categorias]);
     }
 
     /**
@@ -94,8 +76,6 @@ class CategoriaController extends Controller
         ->orderBy('name')
         ->get();
 
-        return redirect()->route('categorias.index');
-
-        
+        return json_encode ( ['categorias' => $categorias]);
     }
 }
